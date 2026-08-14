@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Um Jardim de Bênçãos para Mamãe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-top:#fdf1f0;
+    --bg-mid:#faf3ea;
+    --bg-bottom:#f2ecdf;
+    --hill:#c3dab8;
+    --hill-dark:#a9c99b;
+    --hill-darker:#8fb87f;
+    --pink:#f0bcc9;
+    --pink-d:#e3a1b3;
+    --lavender:#cdbbe6;
+    --lavender-d:#b39cd6;
+    --peach:#f6d5a6;
+    --peach-d:#eebd7d;
+    --butter:#f2e3a3;
+    --butter-d:#e5cd77;
+    --gold:#b6884f;
+    --text:#4a4038;
+    --text-soft:#7a6f63;
+    --card:#fffbf6;
+    --water:#a9d4e8;
+    --water-d:#7fb8d6;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Quicksand', sans-serif;
+    color:var(--text);
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 45%, var(--bg-bottom) 100%);
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  .petal{
+    position:fixed;
+    top:-40px;
+    width:12px;
+    height:12px;
+    background:var(--pink);
+    border-radius:0 100% 0 100%;
+    opacity:0.3;
+    pointer-events:none;
+    animation: fall linear infinite;
+    z-index:0;
+  }
+  @keyframes fall{
+    to{ transform: translateY(110vh) rotate(200deg); }
+  }
+
+  /* music toggle */
+  .music-toggle{
+    position:fixed;
+    top:16px;
+    right:16px;
+    z-index:60;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    border:none;
+    background:var(--card);
+    box-shadow:0 6px 18px rgba(74,64,56,0.18);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:1.2rem;
+  }
+  .music-toggle .bar{
+    display:inline-flex;
+    gap:2px;
+    align-items:flex-end;
+    height:16px;
+  }
+  .music-toggle .bar span{
+    display:block;
+    width:3px;
+    background:var(--gold);
+    border-radius:2px;
+    animation: eq 0.9s ease-in-out infinite;
+  }
+  .music-toggle.paused .bar span{ animation-play-state: paused; height:4px !important; }
+  .music-toggle .bar span:nth-child(1){ animation-delay:0s; }
+  .music-toggle .bar span:nth-child(2){ animation-delay:0.2s; }
+  .music-toggle .bar span:nth-child(3){ animation-delay:0.4s; }
+  @keyframes eq{
+    0%,100%{ height:5px; }
+    50%{ height:16px; }
+  }
+  .music-hint{
+    position:fixed;
+    top:16px;
+    right:70px;
+    z-index:60;
+    background:var(--card);
+    color:var(--text-soft);
+    font-size:0.75rem;
+    padding:0.5rem 0.8rem;
+    border-radius:99px;
+    box-shadow:0 6px 18px rgba(74,64,56,0.15);
+    opacity:0;
+    transform:translateX(6px);
+    transition:opacity 0.4s ease, transform 0.4s ease;
+    pointer-events:none;
+    white-space:nowrap;
+  }
+  .music-hint.show{ opacity:1; transform:translateX(0); }
+
+  header{
+    text-align:center;
+    padding:4.5rem 1.2rem 1.5rem;
+    position:relative;
+    z-index:1;
+  }
+  .eyebrow{
+    font-size:0.72rem;
+    letter-spacing:0.26em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:0.9rem;
+  }
+  h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(1.9rem, 7vw, 3.6rem);
+    margin:0 0 0.6rem;
+    color:var(--text);
+    line-height:1.15;
+  }
+  .subtitle{
+    font-size:0.98rem;
+    color:var(--text-soft);
+    max-width:440px;
+    margin:0 auto;
+    line-height:1.6;
+    padding:0 0.5rem;
+  }
+
+  .progress-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.5rem;
+    margin-top:2rem;
+  }
+  .progress-label{
+    font-size:0.82rem;
+    color:var(--text-soft);
+    font-weight:600;
+  }
+  .progress-track{
+    width:180px;
+    height:6px;
+    background:rgba(0,0,0,0.06);
+    border-radius:99px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--pink-d), var(--peach-d));
+    border-radius:99px;
+    transition:width 0.6s ease;
+  }
+
+  main{
+    position:relative;
+    z-index:1;
+    max-width:900px;
+    margin:0 auto;
+    padding:1rem 1rem 1rem;
+  }
+
+  .garden{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:flex-end;
+    gap:1.6rem 1.4rem;
+    padding:2.5rem 0.8rem 3.5rem;
+    position:relative;
+  }
+
+  .garden::before{
+    content:"";
+    position:absolute;
+    left:-5%;
+    right:-5%;
+    bottom:-1rem;
+    height:65%;
+    background: radial-gradient(ellipse at center, var(--hill) 0%, var(--hill-dark) 70%, var(--hill-darker) 100%);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    z-index:-1;
+    opacity:0.55;
+  }
+
+  .plot{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.5rem;
+    width:104px;
+  }
+  .plot:nth-child(odd){ transform: translateY(-4px); }
+  .plot:nth-child(3n){ transform: translateY(8px); }
+
+  .flower-wrap{
+    position:relative;
+    width:88px;
+    height:100px;
+  }
+
+  .flower-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    width:100%;
+    height:100%;
+    display:block;
+    transition: transform 0.2s ease;
+  }
+  .flower-btn:active{ transform: scale(0.95); }
+  .flower-btn:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:4px;
+    border-radius:12px;
+  }
+
+  .flower-btn svg{ width:100%; height:100%; display:block; overflow:visible; }
+
+  .stem{
+    stroke:#8fb87f;
+    stroke-width:4;
+    fill:none;
+    stroke-linecap:round;
+    stroke-dasharray:78;
+    stroke-dashoffset:68;
+    transition: stroke-dashoffset 0.7s ease;
+  }
+  .leaf{
+    fill:#a9c99b;
+    opacity:0;
+    transform-origin:60px 95px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: scale(0.4);
+  }
+  .bud{
+    transition: transform 0.7s ease, opacity 0.4s ease;
+    transform: translateY(68px) scale(0.55);
+  }
+  .bloom-group{
+    opacity:0;
+    transform: scale(0.2);
+    transform-origin:60px 40px;
+    transition: opacity 0.6s cubic-bezier(.34,1.56,.64,1), transform 0.6s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .flower-btn[data-stage="1"] .stem{ stroke-dashoffset:45; }
+  .flower-btn[data-stage="1"] .bud{ transform: translateY(45px) scale(0.72); }
+
+  .flower-btn[data-stage="2"] .stem{ stroke-dashoffset:15; }
+  .flower-btn[data-stage="2"] .bud{ transform: translateY(15px) scale(0.9); }
+  .flower-btn[data-stage="2"] .leaf{ opacity:1; transform: scale(1); }
+
+  .flower-btn[data-stage="3"] .stem{ stroke-dashoffset:0; }
+  .flower-btn[data-stage="3"] .bud{ transform: translateY(0px) scale(1); opacity:0; }
+  .flower-btn[data-stage="3"] .leaf{ opacity:1; transform: scale(1); }
+  .flower-btn[data-stage="3"] .bloom-group{ opacity:1; transform: scale(1); }
+
+  .plot-label{
+    font-size:0.72rem;
+    color:var(--text-soft);
+    font-weight:600;
+    text-align:center;
+    line-height:1.3;
+    min-height:2.4em;
+  }
+
+  .drop{
+    position:absolute;
+    width:8px;
+    height:11px;
+    background:var(--water);
+    border:1px solid var(--water-d);
+    border-radius:0 60% 60% 60%;
+    transform:rotate(45deg);
+    left:50%;
+    top:-8px;
+    opacity:0;
+    pointer-events:none;
+    animation: dropfall 0.65s ease-in forwards;
+  }
+  @keyframes dropfall{
+    0%{ opacity:0; transform: translate(-50%,-6px) rotate(45deg) scale(0.7); }
+    15%{ opacity:1; }
+    85%{ opacity:1; }
+    100%{ opacity:0; transform: translate(-50%,70px) rotate(45deg) scale(1); }
+  }
+  .splash{
+    position:absolute;
+    bottom:6px;
+    left:50%;
+    width:26px;
+    height:8px;
+    border:2px solid var(--water-d);
+    border-top:none;
+    border-radius:0 0 50px 50px;
+    opacity:0;
+    transform:translateX(-50%) scale(0.4);
+    pointer-events:none;
+    animation: splashpop 0.5s ease-out forwards;
+  }
+  @keyframes splashpop{
+    0%{ opacity:0; transform:translateX(-50%) scale(0.2); }
+    40%{ opacity:0.8; }
+    100%{ opacity:0; transform:translateX(-50%) scale(1.3); }
+  }
+
+  .finale{
+    text-align:center;
+    padding:1rem 1.2rem 5rem;
+    opacity:0;
+    max-height:0;
+    overflow:hidden;
+    transition: opacity 0.8s ease;
+  }
+  .finale.visible{
+    opacity:1;
+    max-height:600px;
+    padding:2rem 1.2rem 5rem;
+  }
+  .finale p.lead{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.2rem;
+    color:var(--text-soft);
+    margin-bottom:1.6rem;
+  }
+  .envelope-btn{
+    background:linear-gradient(135deg, var(--pink), var(--peach));
+    border:none;
+    color:var(--text);
+    font-family:'Quicksand', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    padding:1rem 2rem;
+    border-radius:99px;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(216,150,150,0.35);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .envelope-btn:hover{ transform: translateY(-3px); box-shadow:0 12px 28px rgba(216,150,150,0.45); }
+
+  footer{
+    text-align:center;
+    padding:1rem 1.5rem 3rem;
+    position:relative;
+    z-index:1;
+  }
+  .reset-btn{
+    background:none;
+    border:none;
+    color:var(--text-soft);
+    font-family:'Quicksand', sans-serif;
+    font-size:0.8rem;
+    text-decoration:underline;
+    cursor:pointer;
+    opacity:0.55;
+  }
+  .reset-btn:hover{ opacity:1; }
+
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(74,64,56,0.45);
+    backdrop-filter: blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:1rem;
+    z-index:50;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.35s ease;
+  }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+
+  .modal{
+    background:var(--card);
+    border-radius:20px;
+    max-width:440px;
+    width:100%;
+    padding:2.2rem 1.6rem 1.8rem;
+    text-align:center;
+    position:relative;
+    box-shadow:0 24px 60px rgba(74,64,56,0.25);
+    transform: translateY(18px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    max-height:82vh;
+    overflow-y:auto;
+  }
+  .overlay.open .modal{ transform: translateY(0) scale(1); }
+
+  .modal-icon{ width:56px; height:56px; margin:0 auto 1rem; }
+  .modal h2{
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.5rem;
+    font-weight:600;
+    margin:0 0 1rem;
+  }
+  .modal p.body-text{
+    font-size:0.98rem;
+    line-height:1.7;
+    color:var(--text);
+    margin:0 0 1.4rem;
+    text-align:left;
+  }
+  .modal .verse{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.1rem;
+    color:var(--gold);
+    line-height:1.5;
+    border-top:1px solid rgba(182,136,79,0.25);
+    padding-top:1.1rem;
+  }
+  .modal .verse-ref{
+    display:block;
+    font-family:'Quicksand', sans-serif;
+    font-style:normal;
+    font-size:0.75rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--text-soft);
+    margin-top:0.5rem;
+  }
+  .modal .close-btn{
+    position:absolute;
+    top:0.9rem;
+    right:1rem;
+    background:none;
+    border:none;
+    font-size:1.4rem;
+    color:var(--text-soft);
+    cursor:pointer;
+    line-height:1;
+    padding:0.3rem;
+  }
+
+  .modal.letter{ max-width:560px; text-align:left; }
+  .modal.letter h2{ text-align:center; }
+  .modal.letter p.body-text{ margin-bottom:1.1rem; }
+  .modal.letter .verse{ text-align:center; }
+  .modal.letter .signature{
+    text-align:right;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.1rem;
+    color:var(--text-soft);
+    margin-top:1.2rem;
+  }
+
+  @media (max-width:480px){
+    header{ padding:4rem 1rem 1rem; }
+    .plot{ width:88px; }
+    .flower-wrap{ width:76px; height:88px; }
+    .garden{ gap:1.1rem 0.8rem; }
+    .music-hint{ display:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+
+<audio id="bgMusic" loop preload="auto">
+  <source src="musica-aniversario.mp3" type="audio/mpeg">
+</audio>
+<button class="music-toggle" id="musicToggle" aria-label="Pausar ou tocar a música">
+  <span class="bar"><span></span><span></span><span></span></span>
+</button>
+<div class="music-hint" id="musicHint">toque para ouvir a música</div>
+
+<header>
+  <div class="eyebrow">Feliz aniversário</div>
+  <h1>Um Jardim de Bênçãos<br>para Mamãe</h1>
+  <p class="subtitle">Cada flor guarda uma lembrança sua. Toque 3 vezes em cada uma para regá-la até desabrochar.</p>
+  <div class="progress-wrap">
+    <span class="progress-label" id="progressLabel">0 de 6 flores desabrocharam</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</header>
+
+<main>
+  <div class="garden" id="garden"></div>
+
+  <div class="finale" id="finale">
+    <p class="lead">O jardim está completo. Agora só falta uma última coisa.</p>
+    <button class="envelope-btn" id="openLetter">Abrir a carta para mamãe 💌</button>
+  </div>
+</main>
+
+<footer>
+  <button class="reset-btn" id="resetBtn">reiniciar o jardim</button>
+</footer>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const flowers = [
+  {
+    id: 1, color: "pink", label: "Amor sem medida",
+    text: "Desde o primeiro dia, o seu amor por mim nunca teve condição. Nas noites em claro, nos colos apertados, nas orações feitas em silêncio por mim, você me ensinou o que é amar de verdade, sem esperar nada em troca.",
+    verse: "O amor é paciente, o amor é bondoso.",
+    ref: "1 Coríntios 13:4"
+  },
+  {
+    id: 2, color: "lavender", label: "Minha melhor amiga",
+    text: "Com o tempo, a mãe que me criou virou também a amiga que eu escolho todos os dias. Divido com você minhas alegrias, meus medos e minhas dúvidas, sabendo que sempre vou encontrar colo, conselho e verdade.",
+    verse: "Em todo tempo ama o amigo, e para a angústia nasce o irmão.",
+    ref: "Provérbios 17:17"
+  },
+  {
+    id: 3, color: "peach", label: "Fé que se vive",
+    text: "Sua fé nunca foi só palavra. Eu vi você ajoelhada em oração, vi você confiando mesmo quando tudo parecia incerto, vi você servindo a Deus com a vida inteira. Foi assistindo você que aprendi o que é uma fé de verdade.",
+    verse: "Eu e a minha casa serviremos ao Senhor.",
+    ref: "Josué 24:15"
+  },
+  {
+    id: 4, color: "butter", label: "Força nas tempestades",
+    text: "Nas horas mais difíceis, quando tudo parecia desmoronar, foi em você que encontrei um exemplo de coragem. Você nunca perdeu a esperança, porque sabia onde estava firmada a sua confiança.",
+    verse: "Força e dignidade são as suas vestes, e ri-se do porvir.",
+    ref: "Provérbios 31:25"
+  },
+  {
+    id: 5, color: "pink", label: "Sabedoria em cada palavra",
+    text: "Suas palavras sempre pesaram mais pela sabedoria do que pelo tom. Cada conselho seu carregava verdade e cuidado, e até hoje eu paro pra pensar: 'o que a mamãe diria sobre isso?'",
+    verse: "Abre a sua boca com sabedoria.",
+    ref: "Provérbios 31:26"
+  },
+  {
+    id: 6, color: "lavender", label: "Um legado que floresce",
+    text: "O que você viveu não fica só com você, floresce em mim, e um dia vai florescer em quem vier depois. Sua fé, seu exemplo e seu amor são uma semente que atravessa gerações.",
+    verse: "Recordo-me da fé sincera que em ti habita.",
+    ref: "2 Timóteo 1:5"
+  }
+];
+
+const colorMap = {
+  pink: { petal: "#f0bcc9", petalD: "#e3a1b3" },
+  lavender: { petal: "#cdbbe6", petalD: "#b39cd6" },
+  peach: { petal: "#f6d5a6", petalD: "#eebd7d" },
+  butter: { petal: "#f2e3a3", petalD: "#e5cd77" }
+};
+
+function flowerSVG(color){
+  const c = colorMap[color];
+  let petals = "";
+  for(let i=0;i<5;i++){
+    const angle = i * 72;
+    petals += `<ellipse cx="60" cy="34" rx="13" ry="21" fill="${c.petal}" stroke="${c.petalD}" stroke-width="1" transform="rotate(${angle} 60 60)"/>`;
+  }
+  return `
+  <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    <path class="stem" d="M60 118 L60 40"/>
+    <path class="leaf" d="M60 95 Q44 90 40 76 Q54 78 60 95 Z"/>
+    <path class="leaf" d="M60 95 Q76 90 80 76 Q66 78 60 95 Z"/>
+    <ellipse class="bud" cx="60" cy="40" rx="10" ry="14" fill="#9fc590" stroke="#7a9e6e" stroke-width="1"/>
+    <g class="bloom-group">
+      ${petals}
+      <circle cx="60" cy="40" r="11" fill="#e5cd77" stroke="#b6884f" stroke-width="1"/>
+    </g>
+  </svg>`;
+}
+
+function smallFlowerIcon(color){
+  const c = colorMap[color];
+  let petals = "";
+  for(let i=0;i<5;i++){
+    const angle = i * 72;
+    petals += `<ellipse cx="30" cy="16" rx="7" ry="11" fill="${c.petal}" stroke="${c.petalD}" stroke-width="0.6" transform="rotate(${angle} 30 30)"/>`;
+  }
+  return `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">${petals}<circle cx="30" cy="30" r="6" fill="#e5cd77" stroke="#b6884f" stroke-width="0.6"/></svg>`;
+}
+
+const progressState = {}; // id -> stage (0-3)
+flowers.forEach(f => progressState[f.id] = 0);
+const bloomed = new Set();
+
+const garden = document.getElementById('garden');
+const overlay = document.getElementById('overlay');
+const modal = document.getElementById('modal');
+const progressLabel = document.getElementById('progressLabel');
+const progressFill = document.getElementById('progressFill');
+const finale = document.getElementById('finale');
+
+function stageHint(stage){
+  if(stage === 0) return "toque para regar";
+  if(stage === 1) return "toque mais 2 vezes";
+  if(stage === 2) return "toque mais 1 vez";
+  return "";
+}
+
+function renderGarden(){
+  garden.innerHTML = "";
+  flowers.forEach(f => {
+    const stage = progressState[f.id];
+    const plot = document.createElement('div');
+    plot.className = 'plot';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'flower-wrap';
+
+    const btn = document.createElement('button');
+    btn.className = 'flower-btn';
+    btn.setAttribute('data-stage', stage);
+    btn.setAttribute('aria-label', stage === 3 ? f.label : 'Flor, toque para regar');
+    btn.innerHTML = flowerSVG(f.color);
+    btn.addEventListener('click', (e) => onFlowerClick(f, wrap, e));
+
+    wrap.appendChild(btn);
+
+    const label = document.createElement('div');
+    label.className = 'plot-label';
+    label.textContent = stage === 3 ? f.label : stageHint(stage);
+
+    plot.appendChild(wrap);
+    plot.appendChild(label);
+    garden.appendChild(plot);
+  });
+  updateProgress();
+}
+
+function spawnWaterDrops(wrap){
+  for(let i=0;i<4;i++){
+    const drop = document.createElement('div');
+    drop.className = 'drop';
+    drop.style.left = (40 + Math.random()*20) + '%';
+    drop.style.animationDelay = (i*0.08) + 's';
+    wrap.appendChild(drop);
+    setTimeout(() => drop.remove(), 700);
+  }
+  const splash = document.createElement('div');
+  splash.className = 'splash';
+  splash.style.animationDelay = '0.45s';
+  wrap.appendChild(splash);
+  setTimeout(() => splash.remove(), 950);
+}
+
+function onFlowerClick(f, wrap, evt){
+  spawnWaterDrops(wrap);
+  ensureMusicPlaying();
+
+  if(progressState[f.id] >= 3) {
+    openModal(f);
+    return;
+  }
+  progressState[f.id] += 1;
+  const stage = progressState[f.id];
+  const btn = evt.currentTarget;
+  btn.setAttribute('data-stage', stage);
+  const label = btn.closest('.plot').querySelector('.plot-label');
+
+  if(stage === 3){
+    bloomed.add(f.id);
+    btn.setAttribute('aria-label', f.label);
+    label.textContent = f.label;
+    updateProgress();
+    setTimeout(() => openModal(f), 500);
+  } else {
+    label.textContent = stageHint(stage);
+  }
+}
+
+function updateProgress(){
+  progressLabel.textContent = `${bloomed.size} de ${flowers.length} flores desabrocharam`;
+  progressFill.style.width = `${(bloomed.size/flowers.length)*100}%`;
+  if(bloomed.size === flowers.length){
+    finale.classList.add('visible');
+  } else {
+    finale.classList.remove('visible');
+  }
+}
+
+function openModal(f){
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <button class="close-btn" aria-label="Fechar">&times;</button>
+    <div class="modal-icon">${smallFlowerIcon(f.color)}</div>
+    <h2>${f.label}</h2>
+    <p class="body-text">${f.text}</p>
+    <p class="verse">"${f.verse}"<span class="verse-ref">${f.ref}</span></p>
+  `;
+  modal.querySelector('.close-btn').addEventListener('click', closeModal);
+  overlay.classList.add('open');
+}
+
+function openLetterModal(){
+  modal.className = 'modal letter';
+  modal.innerHTML = `
+    <button class="close-btn" aria-label="Fechar">&times;</button>
+    <h2>Para a melhor mãe do mundo</h2>
+    <p class="body-text">Mamãe,</p>
+    <p class="body-text">Hoje, mais um ano se soma à sua linda história, e eu queria aproveitar este dia para te dizer algo que talvez eu não diga tantas vezes quanto deveria: eu tenho um orgulho imenso de ser seu filho.</p>
+    <p class="body-text">Tenho orgulho não apenas da mãe que você é para mim, mas da mulher que você se tornou. Tenho orgulho de poder acompanhar, de perto, cada uma das suas conquistas, cada batalha que você venceu, cada sonho que realizou e cada vez que você se levantou mesmo quando as coisas não foram fáceis. Ver tudo o que você construiu ao longo da sua vida me faz admirar você cada vez mais.</p>
+    <p class="body-text">E existe algo que talvez me orgulhe ainda mais: ver como as outras pessoas enxergam você. Ver pessoas que te admiram, que confiam em você, que te procuram para pedir conselhos e que encontram em você um exemplo. É bonito perceber que aquilo que eu vejo em você dentro de casa também é enxergado por quem está ao seu redor.</p>
+    <p class="body-text">Você não é apenas minha mãe. Você é uma das pessoas que mais admiro nesta vida. É meu exemplo, minha conselheira, meu porto seguro e uma das maiores responsáveis pelo homem que eu estou tentando me tornar.</p>
+    <p class="body-text">Eu olho para você e penso que, se eu conseguir ser pelo menos 1% da pessoa que você é todos os dias, já terei muito do que me orgulhar. E uma das coisas que mais peço a Deus nas minhas orações é que, um dia, eu tenha ao meu lado uma esposa tão virtuosa, sábia, forte e temente a Deus quanto você é. Porque, se existe algo que aprendi observando você, é o valor de uma mulher de verdade.</p>
+    <p class="body-text">Sua fé também sempre foi uma das coisas que mais me marcaram. Você me ensinou que confiar em Deus não é apenas falar sobre Ele, mas viver essa confiança todos os dias. Aprendi com você que amar também é servir, que a fé se demonstra nas atitudes e que uma vida cristã verdadeira vai muito além das palavras.</p>
+    <p class="body-text">E talvez uma das coisas que eu mais queira te dizer hoje seja esta: eu luto todos os dias para ser um filho de quem você possa se orgulhar.</p>
+    <p class="body-text">Eu sei que já errei muito. Sei que já fiz coisas que poderiam ter te decepcionado e que nem sempre fui o filho que você merecia. Carrego consciência dos meus erros, mas também carrego dentro de mim uma vontade enorme de mudar, crescer e me tornar alguém que faça você olhar para mim e pensar: "valeu a pena tudo o que eu fiz por ele."</p>
+    <p class="body-text">Se hoje eu tenho sonhos de me tornar alguém melhor, grande parte disso vem de olhar para você e pensar no tipo de pessoa que quero ser.</p>
+    <p class="body-text">Cada flor deste jardim representa um pequeno pedaço daquilo que você significa para mim. Mas, ainda assim, nenhuma quantidade de flores seria suficiente para representar tudo o que você é na minha vida.</p>
+    <p class="verse">"Ainda que o nosso homem exterior se corrompa, o interior, contudo, se renova de dia em dia."<span class="verse-ref">2 Coríntios 4:16</span></p>
+    <p class="body-text" style="margin-top:1.2rem;">Que Deus continue renovando suas forças, abençoando seus caminhos, realizando os desejos do seu coração e permitindo que eu ainda tenha muitos e muitos anos ao seu lado, acompanhando suas conquistas e podendo te chamar de minha mãe.</p>
+    <p class="body-text">Obrigado por ser meu exemplo.<br>Obrigado por acreditar em mim, mesmo quando eu não fui capaz de acreditar em mim mesmo.<br>Obrigado por nunca deixar de ser minha mãe, mesmo nos momentos em que eu não fui o filho que deveria ser.</p>
+    <p class="body-text">Eu te amo profundamente, mamãe. E tenho um orgulho que não cabe em mim de ser seu filho.</p>
+    <p class="body-text" style="text-align:center; font-weight:700;">Feliz aniversário. ❤️</p>
+    <p class="signature">Com todo o meu amor,<br>seu filho. 🌸</p>
+  `;
+  modal.querySelector('.close-btn').addEventListener('click', closeModal);
+  overlay.classList.add('open');
+}
+
+function closeModal(){
+  overlay.classList.remove('open');
+}
+overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
+
+document.getElementById('openLetter').addEventListener('click', openLetterModal);
+document.getElementById('resetBtn').addEventListener('click', () => {
+  flowers.forEach(f => progressState[f.id] = 0);
+  bloomed.clear();
+  renderGarden();
+  closeModal();
+});
+
+// ambient floating petals
+const petalContainer = document.getElementById('petals');
+for(let i=0;i<7;i++){
+  const p = document.createElement('div');
+  p.className = 'petal';
+  const startLeft = Math.random()*100;
+  const duration = 14 + Math.random()*10;
+  const delay = Math.random()*14;
+  const colors = ['#f0bcc9','#cdbbe6','#f6d5a6'];
+  p.style.left = startLeft + 'vw';
+  p.style.background = colors[i % colors.length];
+  p.style.animationDuration = duration + 's';
+  p.style.animationDelay = '-' + delay + 's';
+  petalContainer.appendChild(p);
+}
+
+// background music
+const bgMusic = document.getElementById('bgMusic');
+const musicToggle = document.getElementById('musicToggle');
+const musicHint = document.getElementById('musicHint');
+let musicStarted = false;
+
+function ensureMusicPlaying(){
+  if(musicStarted) return;
+  bgMusic.play().then(() => {
+    musicStarted = true;
+    musicToggle.classList.remove('paused');
+    musicHint.classList.remove('show');
+  }).catch(() => {});
+}
+
+// try autoplay immediately on load
+window.addEventListener('load', () => {
+  bgMusic.play().then(() => {
+    musicStarted = true;
+  }).catch(() => {
+    // autoplay blocked by browser — show hint and wait for first interaction
+    musicHint.classList.add('show');
+    const startOnce = () => {
+      ensureMusicPlaying();
+      document.removeEventListener('click', startOnce);
+      document.removeEventListener('touchstart', startOnce);
+    };
+    document.addEventListener('click', startOnce, { once:true });
+    document.addEventListener('touchstart', startOnce, { once:true });
+  });
+});
+
+musicToggle.addEventListener('click', () => {
+  if(bgMusic.paused){
+    bgMusic.play();
+    musicToggle.classList.remove('paused');
+    musicHint.classList.remove('show');
+    musicStarted = true;
+  } else {
+    bgMusic.pause();
+    musicToggle.classList.add('paused');
+  }
+});
+
+renderGarden();
+</script>
+
+</body>
+</html>
